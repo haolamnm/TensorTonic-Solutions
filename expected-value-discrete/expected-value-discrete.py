@@ -7,10 +7,10 @@ def expected_value_discrete(x, p):
     """
     x_np, p_np = np.asarray(x), np.asarray(p)
 
-    if not math.isclose(np.sum(p_np), 1.0, abs_tol=1e-6):
-        raise ValueError("The sum of provided probabilities should be 1")
-
     if x_np.shape != p_np.shape:
-        raise ValueError(f"The shape is mismatched, got x:{x_np.shape} and p:{p_np.shape}")
+        raise ValueError(f"Shape mismatch: x={x_np.shape}, p={p_np.shape}")
+        
+    if not math.isclose(np.sum(p_np), 1.0, abs_tol=1e-6):
+        raise ValueError("Probabilities must sum to 1")
     
-    return np.sum(np.asarray(x) * np.asarray(p))
+    return np.dot(x_np, p_np)
