@@ -6,14 +6,8 @@ def entropy_node(y):
     """
     if len(y) == 0:
         return 0.0
-    
-    cls, cnts = np.unique(y, return_counts=True)
-    probs = cnts / len(y) # normalize
-    
-    entropy = 0.0
-    for i in range(len(cls)):
-        if probs[i] == 0:
-            continue
-        entropy += probs[i] * np.log2(probs[i])
-    return -entropy
+
+    _, cnts = np.unique(y, return_counts=True)
+    probs = cnts / len(y)
+    return -np.sum(probs * np.log2(probs))
     
