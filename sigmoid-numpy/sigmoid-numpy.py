@@ -4,5 +4,10 @@ def sigmoid(x):
     """
     Vectorized sigmoid function.
     """
-    # Write code here
-    return 1 / (1 + np.exp(-np.asarray(x, dtype=float)))
+    x = np.asarray(x, dtype=float)
+
+    # Best practice for big positive x
+    return np.where(x >= 0,
+                    1 / (1 + np.exp(-x)),
+                    np.exp(x) / (np.exp(x) + 1)
+                   )
