@@ -9,4 +9,4 @@ def mean_squared_error(y_pred, y_true):
     if y_pred.shape != y_true.shape:
         return None
 
-    return np.average(np.square(y_pred - y_true))
+    return np.mean(np.square(y_pred - y_true))
