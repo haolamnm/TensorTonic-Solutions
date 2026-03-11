@@ -1,13 +1,16 @@
+import numpy as np
+
 def popularity_ranking(items, min_votes, global_mean):
     """
     Compute the Bayesian weighted rating for each item.
     """
-    weighted_rating = []
-    for vote, cnt in items:
-        num = cnt * vote + min_votes * global_mean
-        deno = cnt + min_votes
-        weighted_rating.append(num / deno)
+    if not items:
+        return []
+        
+    items_np = np.asarray(items)
+    votes_np, cnts_np = items_np[:, 0], items_np[:, 1]
 
-    return weighted_rating
-    
-    
+    # Weighted rating vectorized
+    wr_np = (cnts_np * votes_np + min_votes * global_mean) / (cnts_np + min_votes)
+
+    return wr_np.tolist()
