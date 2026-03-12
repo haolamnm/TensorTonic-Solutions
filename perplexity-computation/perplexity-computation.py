@@ -7,10 +7,13 @@ def perplexity(prob_distributions, actual_tokens):
     prob_distributions = np.asarray(prob_distributions, dtype=float)
     actual_tokens = np.asarray(actual_tokens, dtype=int)
 
-    N = actual_tokens.shape[0]
+    N = len(actual_tokens)
     probs = prob_distributions[np.arange(N), actual_tokens]
 
-    entropy = - np.mean(np.log(probs))
+    # Remember to handle log(0)
+    safe_probs = np.clip(probs, 1e-12, 1.0)
+
+    entropy = - np.mean(np.log(safe_probs))
     perplexity = np.exp(entropy)
     
     return perplexity
