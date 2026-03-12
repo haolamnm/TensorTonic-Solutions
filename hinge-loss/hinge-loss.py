@@ -7,19 +7,16 @@ def hinge_loss(y_true, y_score, margin=1.0, reduction="mean") -> float:
     reduction: "mean" or "sum"
     Return: float
     """
-    funcs = {
+    fn = {
         "mean": np.mean,
         "sum": np.sum
     }
-    if reduction not in funcs:
-        raise ValueError
+    if reduction not in fn:
+        raise ValueError(f"reduction must be 'mean' or 'sum', got '{reduction}'")
     
     y_true = np.asarray(y_true)
     y_score = np.asarray(y_score, dtype=float)
     
-    raw = margin - y_true * y_score
-    zeros = np.zeros(len(y_true))
-    maxima = np.maximum(raw, zeros)
-
-    return funcs[reduction](maxima)
+    losses = np.maximum(0, margin - y_true * y_score)
+    return fn[reduction](losses)
     
