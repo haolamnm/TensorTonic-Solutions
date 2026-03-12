@@ -6,6 +6,7 @@ def word_count_dict(sentences):
     
     for sent in sentences:
         for word in sent:
+            # clean get method
             counter[word] = counter.get(word, 0) + 1
 
     return dict(counter)
