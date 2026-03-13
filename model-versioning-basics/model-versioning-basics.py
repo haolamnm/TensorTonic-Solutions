@@ -5,21 +5,6 @@ def promote_model(models):
     if not models:
         return ""
 
-    picked = models[0]
-    for model in models:
-        if model["accuracy"] > picked["accuracy"]:
-            picked = model
-        elif model["accuracy"] < picked["accuracy"]:
-            continue
-        else:
-            if model["latency"] < picked["latency"]:
-                picked = model
-            elif model["latency"] > picked["latency"]:
-                continue
-            else:
-                if model["timestamp"] > picked["timestamp"]:
-                    picked = model
-                else:
-                    continue
-
-    return picked["name"]
+    # elegant use of max
+    best = max(models, key=lambda m: (m["accuracy"], -m["latency"], m["timestamp"]))
+    return best["name"]
