@@ -6,8 +6,9 @@ def binary_focal_loss(predictions, targets, alpha, gamma):
     """
     targets = np.asarray(targets, dtype=bool)
     predictions = np.asarray(predictions, dtype=float)
-    
-    pt = np.abs(targets - (1 - predictions))
-    losses = -alpha * np.pow((1 - pt), gamma) * np.log(pt)
+
+    pt = np.where(targets, predictions, 1 - predictions)
+    pt = np.clip(pt, 1e-7, 1.0)
+    losses = -alpha * (1 - pt)**gamma * np.log(pt)
 
     return np.mean(losses)
