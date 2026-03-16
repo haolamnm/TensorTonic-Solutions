@@ -1,9 +1,8 @@
+from itertools import chain
+
 def catalog_coverage(recommendations, n_items):
     """
     Compute the catalog coverage of a recommender system.
     """
-    chained_recommendations = []
-    for rec in recommendations:
-        chained_recommendations.extend(rec)
-    n_uniq = len(set(chained_recommendations))
+    n_uniq = len(set(chain.from_iterable(recommendations)))
     return n_uniq / n_items
