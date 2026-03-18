@@ -10,8 +10,6 @@ def positional_encoding(seq_len, d_model, base=10000.0):
     
     # (N, 1) / (1, D/2) = (N, ceil(D/2))
     angles = positions / np.power(base, (2 * dims / d_model))
-    print(angles.shape)
-    print(angles)
 
     # (N, D)
     pe = np.zeros((seq_len, d_model))
