@@ -5,17 +5,10 @@ def top_k_recommendations(scores, rated_indices, k):
     Return indices of top-k unrated items by predicted score.
     """
     scores = np.asarray(scores, dtype=float)
-    indices = np.argsort(scores).tolist()
-    print(indices)
-    excluded_indices = set(rated_indices)
-
-    view = indices if (scores == np.mean(scores)).all() else indices[::-1]
-
-    recommendations = []
-    for idx in view:
-        if idx not in excluded_indices:
-            recommendations.append(idx)
-        if len(recommendations) == k:
-            break
-
-    return recommendations
+    excluded = set(rated_indices)
+    
+    sorted_indices = np.argsort(-scores).tolist()
+    recommendations = [idx for idx in sorted_indices if idx not in excluded]
+    # might use early break if K is large
+    
+    return recommendations[:k]
