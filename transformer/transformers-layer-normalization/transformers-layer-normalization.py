@@ -14,8 +14,8 @@ def layer_norm(x: np.ndarray, gamma: np.ndarray, beta: np.ndarray, eps: float = 
         Normalized array of same shape as x
     """
     # X (B, N, D_model)
-    # nuy (B, N, 1)
-    # sigma (B, N, 1)
+    # E (B, N, 1)
+    # V (B, N, 1)
     E = np.mean(x, axis=-1, keepdims=True)
     V = np.var(x, axis=-1, keepdims=True)
 
