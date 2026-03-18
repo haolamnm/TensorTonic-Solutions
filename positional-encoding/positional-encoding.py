@@ -17,9 +17,6 @@ def positional_encoding(seq_len, d_model, base=10000.0):
     pe = np.zeros((seq_len, d_model))
 
     pe[:, 0::2] = np.sin(angles)
-    if d_model % 2 == 1:
-        pe[:, 1::2] = np.cos(angles[:, :-1])
-    else:
-        pe[:, 1::2] = np.cos(angles)
+    pe[:, 1::2] = np.cos(angles[:, :d_model // 2])
 
     return pe
