@@ -6,7 +6,7 @@ def normalize(matrix, axis, norm_type):
     if norm_type == "l1":
         return np.sum(np.abs(matrix), axis=axis, keepdims=True)
     if norm_type == "max":
-        return np.max(matrix, axis=axis, keepdims=True)
+        return np.max(np.abs(matrix), axis=axis, keepdims=True)
     else:
         raise ValueError
     
