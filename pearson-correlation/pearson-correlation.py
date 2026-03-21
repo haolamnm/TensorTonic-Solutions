@@ -11,13 +11,8 @@ def pearson_correlation(X):
 
     X_m = X - np.mean(X, axis=0, keepdims=True)
     X_cov = (X_m.T @ X_m) / (N - 1)
-    sigma = np.sqrt(np.diag(X_cov))
-    std_devs = np.outer(sigma, sigma)
+    std = np.std(X, axis=0, ddof=1)
+    std_devs = np.outer(std, std)
 
-    if not std_devs.all():
-        X_cov = np.full((D, D), np.nan)
-        mask = std_devs.astype(bool)
-        X_cov[mask] = 1
-        return X_cov 
-    
-    return X_cov / std_devs
+    with np.errstate(invalid="ignore"):
+        return X_cov / std_devs
