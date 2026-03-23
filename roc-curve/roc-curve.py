@@ -20,6 +20,8 @@ def roc_curve(y_true, y_score):
     tpr = tp / p
     fpr = fp / n
 
+    # Keep only the LAST index of each tied group
+    # e.g. scores [0.8, 0.5, 0.5, 0.3]. keep indices [0, 2, 3]
     keep = np.concatenate([
         np.where(s_sorted[:-1] != s_sorted[1:])[0],
         [len(y_true) - 1]
