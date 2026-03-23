@@ -1,11 +1,9 @@
+import numpy as np
+
 def cumulative_returns(returns):
     """
     Compute the cumulative return at each time step.
     """
-    W = [1]
-    cums = []
-    for t, r in enumerate(returns):
-        W.append((1 + r) * W[t])
-        cums.append(W[t + 1] - 1)
-
-    return cums
+    returns = np.asarray(returns, dtype=float)
+    cums = np.cumprod(1 + returns) - 1
+    return cums.tolist()
