@@ -6,12 +6,9 @@ def lag_features(series, lags):
     """
     lags = np.asarray(lags, dtype=int)
     series = np.asarray(series, dtype=float)
-    rows = []
 
-    max_lag = np.max(lags)
+    max_lag = np.max(lags) # L
+    t = np.arange(max_lag, len(series)) # T
 
-    for t in range(max_lag, len(series)):
-        row = series[t - lags]
-        rows.append(row.tolist())
-
-    return rows
+    rows = series[t[:, None] - lags[None, :]]
+    return rows.tolist()
