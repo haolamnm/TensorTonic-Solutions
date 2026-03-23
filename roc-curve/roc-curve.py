@@ -4,34 +4,29 @@ def roc_curve(y_true, y_score):
     """
     Compute ROC curve from binary labels and scores.
     """
-    uniq_scores = [np.inf]
-    visited = set()
-    for score in y_score:
-        if score not in visited:
-            visited.add(score)
-            uniq_scores.append(score)
-    
-    uniq_scores.sort(reverse=True)
-    print(uniq_scores)
-
     y_true = np.asarray(y_true, dtype=int)
     y_score = np.asarray(y_score, dtype=float)
 
-    tpr = []
-    fpr = []
+    desc_idx = np.argsort(y_score)[::-1]
+    y_sorted = y_true[desc_idx]
+    s_sorted = y_score[desc_idx]
+
+    tp = np.cumsum(y_sorted)
+    fp = np.arange(1, len(y_true)+1) - tp
     
-    for threshold in uniq_scores:
-        passed = y_true[y_score >= threshold]
-        # print(passed)
+    p = y_true.sum()
+    n = len(y_true) - p
 
-        tp = float(passed.sum())
-        fp = len(passed) - tp
-        p = float(y_true.sum())
-        n = len(y_true) - p
+    tpr = tp / p
+    fpr = fp / n
 
-        print(tp, fp, p, n)
+    keep = np.concatenate([
+        np.where(s_sorted[:-1] != s_sorted[1:])[0],
+        [len(y_true) - 1]
+    ])
 
-        tpr.append(tp / p)
-        fpr.append(fp / n)
+    tpr = np.concatenate([[0.0], tp[keep] / p])
+    fpr = np.concatenate([[0.0], fp[keep] / n])
+    thresholds = np.concatenate([[np.inf], s_sorted[keep]])
 
-    return fpr, tpr, uniq_scores
+    return fpr, tpr, thresholds
