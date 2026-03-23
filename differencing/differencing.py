@@ -12,6 +12,5 @@ def differencing(series, order):
         first = view[:n-1]
         second = view[1:]
         view = second - first
-        print(view)
 
     return view.tolist()
