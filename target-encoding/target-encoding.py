@@ -7,17 +7,9 @@ def target_encoding(categories, targets):
     """
     targets = np.asarray(targets)
     categories = np.asarray(categories)
-    uniques = np.unique(categories)
 
-    category2encoding = {}
-    for category in uniques:
-        # retrieve scores within a category
-        masked = targets[categories == category]
-        category2encoding[category] = np.mean(masked)
-        
-    encoding = np.zeros(categories.shape)
+    uniques, inverse = np.unique(categories, return_inverse=True)
+    means = np.bincount(inverse, weights=targets) / np.bincount(inverse)
 
-    for index, category in enumerate(categories):
-        encoding[index] = category2encoding[category]
+    return means[inverse].tolist()
 
-    return encoding.tolist()
