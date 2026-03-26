@@ -4,7 +4,7 @@ def batch_generator(X, y, batch_size, rng=None, drop_last=False):
     """
     Randomly shuffle a dataset and yield mini-batches (X_batch, y_batch).
     """
-    if not rng:
+    if rng is None:
         rng = np.random.default_rng()
 
     X = np.asarray(X, dtype=float)
