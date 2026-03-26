@@ -7,25 +7,33 @@ def linear_interpolation(values):
     """
     Fill missing (None) values using linear interpolation.
     """
-    results = []
     n = len(values)
-    for i, v in enumerate(values):
-        if v is not None:
-            results.append(v)
+    results = list(values)
+
+    i = 0
+    while i < n:
+        if results[i] is not None:
+            i += 1
             continue
 
-        left, right = 0, n
-        for l in range(max(i - 1, 0), -1, -1):
-            if values[l] is not None:
-                left = l
-                break
+        # find the right anchor
+        r = i + 1
+        while r < n and results[r] is None:
+            r += 1
 
-        for r in range(min(i + 1, n), n, 1):
-            if values[r] is not None:
-                right = r
-                break
-                
-        value = interp(i, left, values[left], right, values[right])
-        results.append(value)
+        # find the left anchor
+        # clean
+        l = i - 1 
+        
+        # fill the gap [i, r)
+        for j in range(i, r):
+            if l < 0:
+                results[j] = results[r] # clamp left edge
+            elif r >= n:
+                results[j] = results[l] # clamp right edge
+            else:
+                results[j] = interp(j, l, results[l], r, results[r])
+
+        i = r
 
     return results
