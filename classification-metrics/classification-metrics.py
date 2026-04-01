@@ -14,12 +14,12 @@ def classification_metrics(y_true, y_pred, average="micro", pos_label=1):
 
     # compute confusion matrix
     label_map = {val: i for i, val in enumerate(classes)}
-    print(label_map)
+    # print(label_map)
 
     y_t_idx = np.array([label_map[c] for c in y_t])
     y_p_idx = np.array([label_map.get(c, -1) for c in y_p])
-    print(y_t_idx)
-    print(y_p_idx)
+    # print(y_t_idx)
+    # print(y_p_idx)
 
     # filter out predictions that aren't in y_true classes
     mask = y_p_idx != -1
@@ -27,7 +27,7 @@ def classification_metrics(y_true, y_pred, average="micro", pos_label=1):
     # compute confusion matrix
     cm = np.bincount(n_classes * y_t_idx[mask] + y_p_idx[mask], 
                      minlength=n_classes**2).reshape(n_classes, n_classes)
-    print(cm)
+    # print(cm)
 
     tp = np.diag(cm)
     fp = np.sum(cm, axis=0) - tp
