@@ -1,13 +1,6 @@
 import math
 import numpy as np
 
-def dcg(relevance_scores, k) -> float:
-    rel = np.asarray(relevance_scores, dtype=float)[:k]
-    indices = np.arange(1, k + 1)
-
-    dcg_at_k = np.sum((2 ** rel - 1) / np.log2(indices + 1))
-    return float(dcg_at_k)
-
 def ndcg(relevance_scores, k):
     """
     Compute NDCG@k.
@@ -18,15 +11,19 @@ def ndcg(relevance_scores, k):
     if k > len(relevance_scores):
         k = len(relevance_scores)
     
-    rel = np.asarray(relevance_scores, dtype=float)
-    rel_sorted = -np.sort(-rel)
+    rel_base = np.asarray(relevance_scores, dtype=float)
+    rel_sorted = np.sort(rel_base)[::-1]
 
-    dcg_at_k = dcg(rel, k)
-    idcg_at_k = dcg(rel_sorted, k)
-    print(dcg_at_k)
-    print(idcg_at_k)
+    rel_base_at_k = rel_base[:k]
+    rel_sorted_at_k = rel_sorted[:k]
+    indices = np.arange(1, k + 1)
+
+    deno = np.log2(indices + 1)
+    dcg_at_k = np.sum((np.exp2(rel_base_at_k) - 1) / deno)
+    idcg_at_k = np.sum((np.exp2(rel_sorted_at_k) - 1) / deno)
 
     if idcg_at_k == 0.0:
         return 0.0
 
-    return dcg_at_k / idcg_at_k
+    ncdg_at_k = dcg_at_k / idcg_at_k
+    return float(ncdg_at_k)
