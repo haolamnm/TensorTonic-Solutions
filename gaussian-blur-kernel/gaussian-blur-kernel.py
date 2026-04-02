@@ -4,6 +4,7 @@ def gaussian_kernel(size, sigma):
     """
     Generate a normalized 2D Gaussian blur kernel.
     """
+    assert size % 2 == 1, "Size must be odd"
     center = size // 2
     G = [[0 for _ in range(size)] for _ in range(size)]
 
