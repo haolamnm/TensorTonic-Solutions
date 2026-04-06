@@ -4,33 +4,39 @@ def adjusted_cosine_similarity(ratings_matrix, item_i, item_j):
     """
     Compute adjusted cosine similarity between two items.
     """
-    ratings_matrix = np.asarray(ratings_matrix)
-    slice_i = ratings_matrix[:, item_i]
-    slice_j = ratings_matrix[:, item_j]
-    print(slice_i)
-    print(slice_j)
+    R = np.asarray(ratings_matrix, dtype=float)
 
-    mask = (slice_i != 0) & (slice_j != 0)
-    mask = np.broadcast_to(mask, ratings_matrix.T.shape)
-    mask = mask.T
-    print(mask)
-
-    users = ratings_matrix[mask].reshape(-1, ratings_matrix.shape[1])
-    print(users)
+    # pre-calc mean
+    row_sums = R.sum(axis=1)
+    row_counts = (R != 0).sum(axis=1)
     
-    if not mask.any():
+    # avoid division by zero for users with no ratings
+    user_means = np.divide(row_sums, row_counts, 
+                           out=np.zeros_like(row_sums), 
+                           where=row_counts != 0)
+    
+    # identify users who rated both item_i and item_j
+    slice_i = R[:, item_i]
+    slice_j = R[:, item_j]
+    common_users_mask = (slice_i != 0) & (slice_j != 0)
+    
+    if not np.any(common_users_mask):
         return 0.0
 
-    nums = []
-    denos_a = []
-    denos_b = []
-    for user in users.tolist():
-        r_ui = user[item_i]
-        r_uj = user[item_j]
-        u = np.array(user)
-        r_u = u[u != 0].mean()
-        nums.append((r_ui - r_u) * (r_uj - r_u))
-        denos_a.append((r_ui - r_u)**2)
-        denos_b.append((r_uj - r_u)**2)
+    # extract ratings and means for common users
+    r_ui = slice_i[common_users_mask]
+    r_uj = slice_j[common_users_mask]
+    r_u_mean = user_means[common_users_mask]
 
-    return np.sum(nums) / (np.sqrt(np.sum(denos_a)) * np.sqrt(np.sum(denos_b)))
+    # compute centered ratings
+    centered_i = r_ui - r_u_mean
+    centered_j = r_uj - r_u_mean
+
+    # 6. calculate similarity
+    num = np.sum(centered_i * centered_j)
+    den = np.sqrt(np.sum(centered_i**2)) * np.sqrt(np.sum(centered_j**2))
+
+    if den == 0:
+        return 0.0
+        
+    return num / den
